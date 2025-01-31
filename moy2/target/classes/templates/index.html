@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Average Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #1565c0;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        th {
+            background-color: #1565c0;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f8ff;
+        }
+
+        input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0d47a1;
+        }
+
+        .average {
+            font-size: 1.5rem;
+            color: #0d47a1;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                width: 95%;
+            }
+            input {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Calculer Moyenne</h2>
+
+    <table>
+        <tr>
+            <th>Subject</th>
+            <th>Coefficient</th>
+            <th>Note TD</th>
+            <th>Note Controle</th>
+            <th>Grade Average</th>
+            <th>Update</th>
+        </tr>
+        
+        <tr th:each="grade, iter : ${grades}">
+            <form th:action="@{/updateGrade}" method="post">
+                <td th:text="${grade.subject}"></td>
+                <td th:text="${grade.coeff}"></td>
+                <td>
+                    <input type="hidden" name="index" th:value="${iter.index}">
+                    <input type="number" step="0.1" min="0" max="20" name="note_td" th:value="${grade.note_td}" required>
+                </td>
+                <td>
+                    <input type="number" step="0.25" min="0" max="20" name="note_cntrl" th:value="${grade.note_cntrl}" required>
+                </td>
+                <td th:text="${#numbers.formatDecimal(grade.grade_avg, 1, 2)}"></td>
+                <td>
+                    <button type="submit">Update</button>
+                </td>
+            </form>
+        </tr>
+    </table>
+
+    <form action="/resetGrades" method="post">
+        <button type="submit">Reset All Grades</button>
+    </form>
+
+    <h3 class="average">Total Average: <span th:text="${#numbers.formatDecimal(totalAverage, 1, 2)}"></span></h3>
+</body>
+</html>
